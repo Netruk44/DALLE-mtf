@@ -97,7 +97,7 @@ def vae_input_fn(params, eval=False):
         img_size = params["dataset"]["image_size"]
 
         def _process_path(file_path):
-            file_path = file_path.numpy()
+            file_path = tf.decode_raw(file_path, tf.uint8)
             print(f"Processing {file_path}")
             #img = tf.io.read_file(file_path)
             #train_dataset.map(lambda x: tf.py_func(load_audio_file, [x], [tf.string]))
