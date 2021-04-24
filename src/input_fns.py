@@ -97,14 +97,16 @@ def vae_input_fn(params, eval=False):
         img_size = params["dataset"]["image_size"]
 
         def _process_path(file_path):
+            file_path = file_path.numpy()
+            print(f"Processing {file_path}")
             #img = tf.io.read_file(file_path)
             #train_dataset.map(lambda x: tf.py_func(load_audio_file, [x], [tf.string]))
-            with open(file_path.numpy(), "rb") as local_file: # <= change here
+            with open(file_path, "rb") as local_file: # <= change here
               img = local_file.read()
             
             img = decode_img(img, img_size)
             # TODO: figure out if we can do away with the fake labels
-            return img, img
+            return (img, img)
 
         dataset = files.map(lambda x: tf.py_function(_process_path, [x], [tf.string]), num_parallel_calls=tf.data.experimental.AUTOTUNE)
         dataset = configure_for_performance(dataset, params, eval)
