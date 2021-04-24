@@ -98,7 +98,8 @@ def vae_input_fn(params, eval=False):
 
         def _process_path(file_path):
             #img = tf.io.read_file(file_path)
-            with open(file_path, "rb") as local_file: # <= change here
+            file_path_str = tf.strings.as_string(file_path)
+            with open(file_path_str, "rb") as local_file: # <= change here
               img = local_file.read()
             
             img = decode_img(img, img_size)
