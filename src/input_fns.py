@@ -108,7 +108,7 @@ def vae_input_fn(params, eval=False):
             # TODO: figure out if we can do away with the fake labels
             return (img, img)
 
-        dataset = files.map(lambda x: tf.py_function(_process_path, [x], [tf.string]), num_parallel_calls=tf.data.experimental.AUTOTUNE)
+        dataset = files.map(_process_path, num_parallel_calls=tf.data.experimental.AUTOTUNE)
         dataset = configure_for_performance(dataset, params, eval)
         return dataset.repeat()
 
