@@ -88,7 +88,7 @@ def vae_input_fn(params, eval=False):
     else:
         files = tf.data.Dataset.list_files(path, shuffle=False)
         #image_count = len(tf.io.gfile.glob(path))
-        image_count - len(glob.glob(path))
+        image_count = len(glob.glob(path))
         tf.logging.info(path)
         tf.logging.info(f'IMAGE COUNT: {image_count}')
 
