@@ -1,4 +1,5 @@
 import tensorflow.compat.v1 as tf
+import glob
 
 
 def crop_center_and_resize(img, size):
@@ -70,7 +71,8 @@ def vae_input_fn(params, eval=False):
     path = params["dataset"]["train_path"] if not eval else params["dataset"]["eval_path"]
 
     if "tfrecords" in params["dataset"] and params["dataset"]["tfrecords"]:
-        files = tf.io.gfile.glob(path)
+        #files = tf.io.gfile.glob(path)
+        files = glob.glob(path)
         file_count = len(files)
         tf.logging.info(path)
         tf.logging.info(f'FILE COUNT: {file_count}')
@@ -85,7 +87,8 @@ def vae_input_fn(params, eval=False):
         return dataset.repeat()
     else:
         files = tf.data.Dataset.list_files(path, shuffle=False)
-        image_count = len(tf.io.gfile.glob(path))
+        #image_count = len(tf.io.gfile.glob(path))
+        image_count - len(glob.glob(path))
         tf.logging.info(path)
         tf.logging.info(f'IMAGE COUNT: {image_count}')
 
@@ -94,7 +97,10 @@ def vae_input_fn(params, eval=False):
         img_size = params["dataset"]["image_size"]
 
         def _process_path(file_path):
-            img = tf.io.read_file(file_path)
+            #img = tf.io.read_file(file_path)
+            with open(file_path, "rb") as local_file: # <= change here
+              img = local_file.read()
+            
             img = decode_img(img, img_size)
             # TODO: figure out if we can do away with the fake labels
             return img, img
