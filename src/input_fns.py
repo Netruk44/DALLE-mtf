@@ -97,24 +97,19 @@ def vae_input_fn(params, eval=False):
         img_size = params["dataset"]["image_size"]
 
         def _process_path(file_path):
-            file_path = file_path.numpy()
-            print(f"Processing {file_path}")
-            #img = tf.io.read_file(file_path)
-            #train_dataset.map(lambda x: tf.py_func(load_audio_file, [x], [tf.string]))
-            with open(file_path, "rb") as local_file: # <= change here
-              img = local_file.read()
-            
-            img = decode_img(img, img_size).numpy()
+            img = tf.io.read_file(file_path)
+            img = decode_img(img, img_size)
             # TODO: figure out if we can do away with the fake labels
-            return (img, img)
+            return img, img
 
-        dataset = files.map(lambda x: tf.py_function(_process_path, [x], (tf.uint8, tf.uint8)), num_parallel_calls=tf.data.experimental.AUTOTUNE)
+        dataset = files.map(_process_path, num_parallel_calls=tf.data.experimental.AUTOTUNE)
         dataset = configure_for_performance(dataset, params, eval)
         return dataset.repeat()
 
 def dalle_input_fn(params, eval=False):
     path = params["dataset"]["train_path"] if not eval else params["dataset"]["eval_path"]
-    files = tf.io.gfile.glob(path)
+    #files = tf.io.gfile.glob(path)
+    files = glob.glob(path)
     file_count = len(files)
     tf.logging.info(path)
     tf.logging.info(f'FILE COUNT: {file_count}')
