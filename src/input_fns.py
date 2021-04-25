@@ -104,7 +104,7 @@ def vae_input_fn(params, eval=False):
             with open(file_path, "rb") as local_file: # <= change here
               img = local_file.read()
             
-            img = decode_img(img, img_size)
+            img = decode_img(img, img_size).numpy()
             # TODO: figure out if we can do away with the fake labels
             return (img, img)
 
